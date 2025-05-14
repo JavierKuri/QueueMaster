@@ -1,26 +1,30 @@
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 
 public class NodePanel extends JPanel {
-    Graph graph = new Graph();
-    ArrayList<Node> nodes = new ArrayList<>();
+    private Graph graph;
 
-    public NodePanel() {
-        graph.addNode(new Node(100, 100, 1, 2.0, 1.0, 3.0, 1.5));
-        graph.addNode(new Node(250, 100, 2, 1.5, 1.2, 2.0, 1.0));
-        graph.addNode(new Node(400, 100, 3, 0.8, 0.6, 1.5, 1.0));
+    public NodePanel(Graph graph) {
+        this.graph = graph;
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+
         for (Node node : graph.getNodes()) {
             node.drawNode(g);
 
+            // Draw arrow (line) to next node if exists
             if (node.nextNode != null) {
                 g.setColor(Color.BLACK);
                 g.drawLine(node.xCoord, node.yCoord, node.nextNode.xCoord, node.nextNode.yCoord);
+
+                // Draw lambda and mu on the line (optional)
+                String label = String.format("λ=%.2f, μ=%.2f", node.lambdaOut, node.muIn);
+                int midX = (node.xCoord + node.nextNode.xCoord) / 2;
+                int midY = (node.yCoord + node.nextNode.yCoord) / 2;
+                g.drawString(label, midX, midY - 5);
             }
         }
     }
