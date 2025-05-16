@@ -43,6 +43,14 @@ class Node {
         return muIn;
     }
 
+    public int getx() {
+        return xCoord;
+    }
+
+    public int getn() {
+        return n;
+    }
+
     //Method for drawing the node
     public void drawNode(Graphics2D g) {
         g.setColor(Color.ORANGE);

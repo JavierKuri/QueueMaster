@@ -77,4 +77,9 @@ public class Graph {
         }
         return probs;
     }
+
+    public void clearGraph() {
+        nodes.clear();
+        queueType = "Undefined";
+    }
 }
