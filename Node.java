@@ -26,6 +26,7 @@ class Node {
         this.muIn = muIn;
     }
 
+    //Getters and Setters
     public void setLambdaIn(double lambdaIn) {
         this.lambdaIn = lambdaIn;
     }
@@ -42,6 +43,7 @@ class Node {
         return muIn;
     }
 
+    //Method for drawing the node
     public void drawNode(Graphics2D g) {
         g.setColor(Color.ORANGE);
         g.fillOval(xCoord - radius, yCoord - radius, 2 * radius, 2 * radius);
