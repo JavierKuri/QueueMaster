@@ -2,6 +2,7 @@ import java.util.ArrayList;
 
 public class Graph {
     private ArrayList<Node> nodes;
+    private int s;
     private String queueType = "Undefined";
 
     public Graph() {
@@ -36,6 +37,14 @@ public class Graph {
 
     public String getQueueType() {
         return queueType;
+    }
+
+    public int getS() {
+        return s;
+    }
+
+    public void setS(int s) {
+        this.s = s;
     }
 
     public double calculateP0() {
@@ -76,6 +85,60 @@ public class Graph {
             probs.add(calculatePn(i));
         }
         return probs;
+    }
+
+    public double calculateLambdaTest() {
+        double lambda_test = 0;
+        ArrayList<Double> probs = getProbabilities();
+        for(int i=1;i<nodes.size();i++) {
+            lambda_test += nodes.get(i).lambdaIn * probs.get(i-1);
+        }
+        return lambda_test;
+    }
+
+    public double calculateMuTest() {
+        double mu_test = 0;
+        ArrayList<Double> probs = getProbabilities();
+        for(int i=nodes.size()-1;i>0;i--) {
+            mu_test += nodes.get(i).muOut * probs.get(i);
+        }
+        return mu_test;
+    }
+
+    public double calculateRho() {
+        double rho=0.0;
+        rho = calculateLambdaTest()/(s * calculateMuTest());
+        return rho;
+    }
+
+    public double calculateL() {
+        double L=0.0;
+        ArrayList<Double> probs = getProbabilities();
+        for(int i=0;i<nodes.size();i++) {
+            L += nodes.get(i).n * probs.get(i);
+        }
+        return L;
+    }
+
+    public double calculateLq() {
+        double Lq=0.0;
+        ArrayList<Double> probs = getProbabilities();
+        for(int i=s;i<nodes.size();i++) {
+            Lq += nodes.get(i-s).n * probs.get(i);
+        }
+        return Lq;
+    }
+
+    public double calculateW() {
+        double W=0.0;
+        W = calculateL()/calculateLambdaTest();
+        return W;
+    }
+
+    public double calculateWq() {
+        double Wq=0.0;
+        Wq = calculateLq()/calculateLambdaTest();
+        return Wq;
     }
 
     public void clearGraph() {
