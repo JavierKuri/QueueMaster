@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import org.json.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -64,11 +65,13 @@ public class Main {
         JButton probsButton = new JButton("Calculate probabilities");
         JButton valuesButton = new JButton("Calculate queue values (rho, L, Lq, W, Wq)");
         JButton clearButton = new JButton("Clear");
+        JButton saveButton = new JButton("Save graph");
         bottomPanel.add(addButton);
         bottomPanel.add(setSButton);
         bottomPanel.add(probsButton);
         bottomPanel.add(valuesButton);
         bottomPanel.add(clearButton);
+        bottomPanel.add(saveButton);
         frame.add(bottomPanel, BorderLayout.SOUTH);
 
         //Create initial node 
@@ -151,6 +154,16 @@ public class Main {
                 valuesResultField.setText(null);
                 sField.setEditable(true);
                 setSButton.setEnabled(true);
+            }
+        });
+
+        //Button for saving graph into JSON
+        saveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ArrayList<Node> nodes=graph.getNodes();
+                ArrayList<Double> probs = graph.getProbabilities();
+                
             }
         });
 
