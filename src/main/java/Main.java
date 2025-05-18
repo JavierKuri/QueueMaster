@@ -3,7 +3,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import org.json.*;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
@@ -163,10 +168,35 @@ public class Main {
             public void actionPerformed(ActionEvent e) {
                 ArrayList<Node> nodes=graph.getNodes();
                 ArrayList<Double> probs = graph.getProbabilities();
-                
+                JSONObject obj = new JSONObject();
+                obj.put("lambda_test", graph.calculateLambdaTest());
+                obj.put("mu_test", graph.calculateMuTest());
+                obj.put("s", graph.getS());
+                obj.put("l", graph.calculateL());
+                obj.put("lq", graph.calculateLq());
+                obj.put("w", graph.calculateW());
+                obj.put("wq", graph.calculateWq());
+                JSONArray json_nodes = new JSONArray();
+                for(int i=0;i<nodes.size();i++) {
+                    JSONObject nodeObj = new JSONObject();
+                    nodeObj.put("n", i);
+                    nodeObj.put("probability", probs.get(i));
+                    nodeObj.put("lambda_out", nodes.get(i).getLambdaOut());
+                    nodeObj.put("mu_in", nodes.get(i).getMuIn());
+                    json_nodes.put(nodeObj);
+                }
+                obj.put("nodes", json_nodes);
+                String projectDir = System.getProperty("user.dir");
+                File outputFile = new File(projectDir + File.separator + "graph_files" + File.separator + "output.json");
+                outputFile.getParentFile().mkdirs();
+                try (FileWriter writer = new FileWriter(outputFile)) {
+                    writer.write(obj.toString(2)); 
+                    System.out.println("JSON saved to: " + outputFile.getAbsolutePath());
+                } catch (IOException exception) {
+                    exception.printStackTrace();
+                }
             }
         });
-
         frame.setVisible(true);
     }
 }
