@@ -1,6 +1,9 @@
 # Maven build output
 /target/
 
+# Graph files
+/graph_files/
+
 # IntelliJ IDEA
 /.idea/
 /*.iml

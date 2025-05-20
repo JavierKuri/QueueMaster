@@ -3,12 +3,15 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.FileReader;
 
 public class Main {
     
@@ -73,12 +76,14 @@ public class Main {
             JButton valuesButton = new JButton("Calculate queue values (rho, L, Lq, W, Wq)");
             JButton clearButton = new JButton("Clear");
             JButton saveButton = new JButton("Save graph");
+            JButton loadButton = new JButton("Load graph");
             bottomPanel.add(addButton);
             bottomPanel.add(setSButton);
             bottomPanel.add(probsButton);
             bottomPanel.add(valuesButton);
             bottomPanel.add(clearButton);
             bottomPanel.add(saveButton);
+            bottomPanel.add(loadButton);
             frame.add(bottomPanel, BorderLayout.SOUTH);
 
             //Create initial node 
@@ -194,8 +199,44 @@ public class Main {
                     try (FileWriter writer = new FileWriter(outputFile)) {
                         writer.write(obj.toString(2)); 
                         System.out.println("JSON saved to: " + outputFile.getAbsolutePath());
+                        JOptionPane.showMessageDialog(frame, "File saved successfully:\n" + outputFile.getAbsolutePath());
                     } catch (IOException exception) {
                         exception.printStackTrace();
+                    }
+                }
+            });
+
+            //Button for loading graphs from JSON
+            loadButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    JFileChooser fileChooser = new JFileChooser();
+                    fileChooser.setDialogTitle("Select a JSON file");
+                    int result = fileChooser.showOpenDialog(frame);
+                    if (result == JFileChooser.APPROVE_OPTION) {
+                        File selectedFile = fileChooser.getSelectedFile();
+                        try (FileReader reader = new FileReader(selectedFile)) {
+                            JSONTokener tokener = new JSONTokener(reader);
+                            JSONObject graphObject = new JSONObject(tokener);
+                            JSONArray nodesArray = graphObject.getJSONArray("nodes");
+                            graph.clearGraph();
+                            Node initialNode = new Node(50, 100, 0, 0.0, 0.0 ,0.0 ,0.0);
+                            graph.addNode(initialNode);
+                            nodePanel.repaint();
+                            for(int i=0;i<nodesArray.length()-1;i++) {
+                                JSONObject nodeObj = nodesArray.getJSONObject(i);
+                                double lambdaIn = nodeObj.getDouble("lambda_out");
+                                double muOut = nodeObj.getDouble("mu_in");
+                                Node newNode = new Node(nodes.get(nodes.size() -1).getx()+150, 100, nodes.get(nodes.size() -1).getn()+1, lambdaIn, muOut, 0.0, 0.0);
+                                graph.addNode(newNode);
+                                nodePanel.repaint();
+                                lambdaInField.setText(null);
+                                muOutField.setText(null);
+                            }
+                        } catch (IOException | org.json.JSONException ex) {
+                            ex.printStackTrace();
+                            JOptionPane.showMessageDialog(frame, "Error: " + ex.getMessage());
+                        }
                     }
                 }
             });
