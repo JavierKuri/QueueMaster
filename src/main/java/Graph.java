@@ -2,8 +2,7 @@ import java.util.ArrayList;
 
 public class Graph {
     private ArrayList<Node> nodes;
-    private int s;
-    private String queueType = "Undefined";
+    private int s = 1;
 
     public Graph() {
         this.nodes = new ArrayList<>();
@@ -29,14 +28,6 @@ public class Graph {
 
     public ArrayList<Node> getNodes() {
         return nodes;
-    }
-
-    public void determineQueueType() {
-
-    }
-
-    public String getQueueType() {
-        return queueType;
     }
 
     public int getS() {
@@ -106,7 +97,7 @@ public class Graph {
     }
 
     public double calculateRho() {
-        double rho=0.0;
+        double rho=1.0;
         rho = calculateLambdaTest()/(s * calculateMuTest());
         return rho;
     }
@@ -143,6 +134,5 @@ public class Graph {
 
     public void clearGraph() {
         nodes.clear();
-        queueType = "Undefined";
     }
 }

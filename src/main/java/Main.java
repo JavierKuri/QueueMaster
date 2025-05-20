@@ -26,9 +26,17 @@ public class Main {
 
             //Center panel for displaying the graph
             NodePanel nodePanel = new NodePanel(graph);
+            JScrollPane scrollPane = new JScrollPane(nodePanel,
+                    JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                    JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+                    nodePanel.setPreferredSize(new Dimension(1500, 500)
+            ); 
             JPanel centerPanel = new JPanel();
             centerPanel.setLayout(new BorderLayout());
-            centerPanel.add(nodePanel, BorderLayout.CENTER);
+            centerPanel.add(scrollPane, BorderLayout.CENTER);
+            scrollPane.setPreferredSize(new Dimension(750, 400)); 
+            scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
             //Result panel for displaying probabilities and other values
             JPanel resultPanel = new JPanel();
@@ -38,13 +46,11 @@ public class Main {
             probsResultField.setPreferredSize(new Dimension(700, 30));
             resultPanel.add(new JLabel("Probabilities: "));
             resultPanel.add(probsResultField);
-
             JTextField valuesResultField = new JTextField();
             valuesResultField.setEditable(false);
             valuesResultField.setPreferredSize(new Dimension(700, 30));
             resultPanel.add(new JLabel("Values (rho, L, Lq, W, Wq): "));
             resultPanel.add(valuesResultField);
-
             centerPanel.add(resultPanel, BorderLayout.SOUTH);
             frame.add(centerPanel, BorderLayout.CENTER);
 
@@ -81,7 +87,7 @@ public class Main {
             buttonsPanel.add(setSButton);
             buttonsPanel.add(Box.createVerticalStrut(40));
 
-            // Main panel using vertical BoxLayout
+            // North panel using vertical BoxLayout
             JPanel northPanel = new JPanel();
             northPanel.setLayout(new BoxLayout(northPanel, BoxLayout.Y_AXIS));
             northPanel.add(topPanel);
@@ -101,7 +107,7 @@ public class Main {
             frame.add(bottomPanel, BorderLayout.SOUTH);
 
             //Create initial node 
-            Node newNode = new Node(50, 100, 0, 0.0, 0.0 ,0.0 ,0.0);
+            Node newNode = new Node(50, 150, 0, 0.0, 0.0 ,0.0 ,0.0);
             graph.addNode(newNode);
 
             //Button for adding nodes
@@ -113,7 +119,7 @@ public class Main {
                     try {
                         muOut = Double.parseDouble(muOutField.getText());
                         lambdaIn = Double.parseDouble(lambdaInField.getText());
-                        Node newNode = new Node(nodes.get(nodes.size() -1).getx()+150, 100, nodes.get(nodes.size() -1).getn()+1, lambdaIn, muOut, 0.0, 0.0);
+                        Node newNode = new Node(nodes.get(nodes.size() -1).getx()+150, 150, nodes.get(nodes.size() -1).getn()+1, lambdaIn, muOut, 0.0, 0.0);
                         graph.addNode(newNode);
                         nodePanel.repaint();
                         lambdaInField.setText(null);
@@ -174,7 +180,7 @@ public class Main {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     graph.clearGraph();
-                    Node newNode = new Node(50, 100, 0, 0.0, 0.0 ,0.0 ,0.0);
+                    Node newNode = new Node(50, 150, 0, 0.0, 0.0 ,0.0 ,0.0);
                     graph.addNode(newNode);
                     nodePanel.repaint();
                     probsResultField.setText(null);
@@ -245,14 +251,14 @@ public class Main {
                             JSONObject graphObject = new JSONObject(tokener);
                             JSONArray nodesArray = graphObject.getJSONArray("nodes");
                             graph.clearGraph();
-                            Node initialNode = new Node(50, 100, 0, 0.0, 0.0 ,0.0 ,0.0);
+                            Node initialNode = new Node(50, 150, 0, 0.0, 0.0 ,0.0 ,0.0);
                             graph.addNode(initialNode);
                             nodePanel.repaint();
                             for(int i=0;i<nodesArray.length()-1;i++) {
                                 JSONObject nodeObj = nodesArray.getJSONObject(i);
                                 double lambdaIn = nodeObj.getDouble("lambda_out");
                                 double muOut = nodeObj.getDouble("mu_in");
-                                Node newNode = new Node(nodes.get(nodes.size() -1).getx()+150, 100, nodes.get(nodes.size() -1).getn()+1, lambdaIn, muOut, 0.0, 0.0);
+                                Node newNode = new Node(nodes.get(nodes.size() -1).getx()+150, 150, nodes.get(nodes.size() -1).getn()+1, lambdaIn, muOut, 0.0, 0.0);
                                 graph.addNode(newNode);
                                 nodePanel.repaint();
                                 lambdaInField.setText(null);
