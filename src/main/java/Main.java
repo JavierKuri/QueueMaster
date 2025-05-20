@@ -69,9 +69,9 @@ public class Main {
             JTextField sField = new JTextField(5);
             JTextField nameField = new JTextField(10);
             nameField.setText("output.json");
-            inputFieldsPanel.add(new JLabel("λ_in:"));
+            inputFieldsPanel.add(new JLabel("lambda_in:"));
             inputFieldsPanel.add(lambdaInField);
-            inputFieldsPanel.add(new JLabel("μ_out:"));
+            inputFieldsPanel.add(new JLabel("mu_out:"));
             inputFieldsPanel.add(muOutField);
             inputFieldsPanel.add(new JLabel("s:"));
             inputFieldsPanel.add(sField);
