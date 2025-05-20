@@ -108,20 +108,19 @@ public class Main {
             addButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    double lambdaIn = 0.0;
-                    double muOut = 0.0;
-                    try {
-                        lambdaIn = Double.parseDouble(lambdaInField.getText());
-                    } catch (NumberFormatException ignored) {}
+                    double lambdaIn = 1.0;
+                    double muOut = 1.0;
                     try {
                         muOut = Double.parseDouble(muOutField.getText());
-                    } catch (NumberFormatException ignored) {}
-
-                    Node newNode = new Node(nodes.get(nodes.size() -1).getx()+150, 100, nodes.get(nodes.size() -1).getn()+1, lambdaIn, muOut, 0.0, 0.0);
-                    graph.addNode(newNode);
-                    nodePanel.repaint();
-                    lambdaInField.setText(null);
-                    muOutField.setText(null);
+                        lambdaIn = Double.parseDouble(lambdaInField.getText());
+                        Node newNode = new Node(nodes.get(nodes.size() -1).getx()+150, 100, nodes.get(nodes.size() -1).getn()+1, lambdaIn, muOut, 0.0, 0.0);
+                        graph.addNode(newNode);
+                        nodePanel.repaint();
+                        lambdaInField.setText(null);
+                        muOutField.setText(null);
+                    } catch (NumberFormatException ignored) {
+                        JOptionPane.showMessageDialog(frame, ignored.getMessage() + " Insert valid numbers for lambda and mu");
+                    }
                 }
             });
 
@@ -132,10 +131,12 @@ public class Main {
                     int s = 1;
                     try {
                         s = Integer.parseInt(sField.getText());
-                    } catch (NumberFormatException ignored) {}
-                    graph.setS(s);
-                    setSButton.setEnabled(false);
-                    sField.setEditable(false);
+                        graph.setS(s);
+                        setSButton.setEnabled(false);
+                        sField.setEditable(false);
+                    } catch (NumberFormatException ignored) {
+                        JOptionPane.showMessageDialog(frame, ignored.getMessage() + " Insert a valid number for s");
+                    }
                 }
             });
 
@@ -190,34 +191,42 @@ public class Main {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     ArrayList<Node> nodes=graph.getNodes();
-                    ArrayList<Double> probs = graph.getProbabilities();
-                    JSONObject obj = new JSONObject();
-                    obj.put("lambda_test", graph.calculateLambdaTest());
-                    obj.put("mu_test", graph.calculateMuTest());
-                    obj.put("s", graph.getS());
-                    obj.put("l", graph.calculateL());
-                    obj.put("lq", graph.calculateLq());
-                    obj.put("w", graph.calculateW());
-                    obj.put("wq", graph.calculateWq());
-                    JSONArray json_nodes = new JSONArray();
-                    for(int i=0;i<nodes.size();i++) {
-                        JSONObject nodeObj = new JSONObject();
-                        nodeObj.put("n", i);
-                        nodeObj.put("probability", probs.get(i));
-                        nodeObj.put("lambda_out", nodes.get(i).getLambdaOut());
-                        nodeObj.put("mu_in", nodes.get(i).getMuIn());
-                        json_nodes.put(nodeObj);
-                    }
-                    obj.put("nodes", json_nodes);
-                    String projectDir = System.getProperty("user.dir");
-                    File outputFile = new File(projectDir + File.separator + "graph_files" + File.separator + nameField.getText());
-                    outputFile.getParentFile().mkdirs();
-                    try (FileWriter writer = new FileWriter(outputFile)) {
-                        writer.write(obj.toString(2)); 
-                        System.out.println("JSON saved to: " + outputFile.getAbsolutePath());
-                        JOptionPane.showMessageDialog(frame, "File saved successfully:\n" + outputFile.getAbsolutePath());
-                    } catch (IOException exception) {
-                        exception.printStackTrace();
+                    if(nodes.size()==1) {
+                        JOptionPane.showMessageDialog(frame, "Cannot save empty graph. Please insert nodes.");
+                    } else {
+                        ArrayList<Double> probs = graph.getProbabilities();
+                        JSONObject obj = new JSONObject();
+                        obj.put("rho", graph.calculateRho());
+                        obj.put("lambda_test", graph.calculateLambdaTest());
+                        obj.put("mu_test", graph.calculateMuTest());
+                        obj.put("s", graph.getS());
+                        obj.put("l", graph.calculateL());
+                        obj.put("lq", graph.calculateLq());
+                        obj.put("w", graph.calculateW());
+                        obj.put("wq", graph.calculateWq());
+                        JSONArray json_nodes = new JSONArray();
+                        for(int i=0;i<nodes.size();i++) {
+                            JSONObject nodeObj = new JSONObject();
+                            nodeObj.put("n", i);
+                            nodeObj.put("probability", probs.get(i));
+                            nodeObj.put("lambda_out", nodes.get(i).getLambdaOut());
+                            nodeObj.put("mu_in", nodes.get(i).getMuIn());
+                            nodeObj.put("mu_out", nodes.get(i).getMuOut());
+                            nodeObj.put("lambda_in", nodes.get(i).getlambdaIn());
+                            json_nodes.put(nodeObj);
+                        }
+                        obj.put("nodes", json_nodes);
+                        String projectDir = System.getProperty("user.dir");
+                        File outputFile = new File(projectDir + File.separator + "graph_files" + File.separator + nameField.getText());
+                        outputFile.getParentFile().mkdirs();
+                        try (FileWriter writer = new FileWriter(outputFile)) {
+                            writer.write(obj.toString(2)); 
+                            System.out.println("JSON saved to: " + outputFile.getAbsolutePath());
+                            JOptionPane.showMessageDialog(frame, "File saved successfully:\n" + outputFile.getAbsolutePath());
+                        } catch (IOException exception) {
+                            exception.printStackTrace();
+                            JOptionPane.showMessageDialog(frame, "Error: " + exception.getMessage());
+                        }
                     }
                 }
             });

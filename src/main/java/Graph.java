@@ -11,10 +11,10 @@ public class Graph {
 
     public void addNode(Node node) {
         if (nodes.isEmpty()) {
-            node.lambdaIn = 0.0;
-            node.muOut = 0.0;
-            node.lambdaOut = 0.0;
-            node.muIn = 0.0;
+            node.lambdaIn = 1.0;
+            node.muOut = 1.0;
+            node.lambdaOut = 1.0;
+            node.muIn = 1.0;
         } else {
             Node prev = nodes.get(nodes.size() - 1);
             prev.nextNode = node;

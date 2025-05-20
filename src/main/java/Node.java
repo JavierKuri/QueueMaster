@@ -43,6 +43,14 @@ class Node {
         return muIn;
     }
 
+    public double getMuOut() {
+        return muOut;
+    }
+
+    public double getlambdaIn() {
+        return lambdaIn;
+    }
+
     public int getx() {
         return xCoord;
     }
