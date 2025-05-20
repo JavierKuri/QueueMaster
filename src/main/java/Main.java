@@ -48,42 +48,56 @@ public class Main {
             centerPanel.add(resultPanel, BorderLayout.SOUTH);
             frame.add(centerPanel, BorderLayout.CENTER);
 
-            //Input panel for assigning mu, lambda and s values
+            //Top panel for save and load buttons
+            JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            JButton saveButton = new JButton("Save");
+            JButton loadButton = new JButton("Load");
+            topPanel.add(saveButton);
+            topPanel.add(loadButton);
+            topPanel.add(Box.createVerticalStrut(40));
+
+            //Input panel for lambda, mu, s, and file fields
+            JPanel inputFieldsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
             JTextField lambdaInField = new JTextField(5);
             JTextField muOutField = new JTextField(5);
             JTextField sField = new JTextField(5);
-            JPanel inputPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-            JPanel lambdaPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
-            lambdaPanel.add(new JLabel("λ_in:"));
-            lambdaPanel.add(lambdaInField);
-            JPanel muPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
-            muPanel.add(new JLabel("μ_out:"));
-            muPanel.add(muOutField);
-            JPanel sPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
-            sPanel.add(new JLabel("s:"));
-            sPanel.add(sField);
-            inputPanel.add(lambdaPanel);
-            inputPanel.add(muPanel);
-            inputPanel.add(sPanel);
-            frame.add(inputPanel, BorderLayout.NORTH);
+            JTextField nameField = new JTextField(10);
+            nameField.setText("output.json");
+            inputFieldsPanel.add(new JLabel("λ_in:"));
+            inputFieldsPanel.add(lambdaInField);
+            inputFieldsPanel.add(new JLabel("μ_out:"));
+            inputFieldsPanel.add(muOutField);
+            inputFieldsPanel.add(new JLabel("s:"));
+            inputFieldsPanel.add(sField);
+            inputFieldsPanel.add(new JLabel("File name:"));
+            inputFieldsPanel.add(nameField);
+            inputFieldsPanel.add(Box.createVerticalStrut(40));
 
-            //Bottom panel for buttons
-            JPanel bottomPanel = new JPanel();
-            bottomPanel.setLayout(new FlowLayout(FlowLayout.CENTER)); 
+            //Button panel for the set s button, add node button, and set file name button
+            JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
             JButton addButton = new JButton("Add Node");
             JButton setSButton = new JButton("Set s");
+            buttonsPanel.add(addButton);
+            buttonsPanel.add(setSButton);
+            buttonsPanel.add(Box.createVerticalStrut(40));
+
+            // Main panel using vertical BoxLayout
+            JPanel northPanel = new JPanel();
+            northPanel.setLayout(new BoxLayout(northPanel, BoxLayout.Y_AXIS));
+            northPanel.add(topPanel);
+            northPanel.add(inputFieldsPanel);
+            northPanel.add(buttonsPanel);
+            frame.add(northPanel, BorderLayout.NORTH);
+
+            //Bottom panel for action buttons
+            JPanel bottomPanel = new JPanel();
+            bottomPanel.setLayout(new FlowLayout(FlowLayout.CENTER)); 
             JButton probsButton = new JButton("Calculate probabilities");
             JButton valuesButton = new JButton("Calculate queue values (rho, L, Lq, W, Wq)");
             JButton clearButton = new JButton("Clear");
-            JButton saveButton = new JButton("Save graph");
-            JButton loadButton = new JButton("Load graph");
-            bottomPanel.add(addButton);
-            bottomPanel.add(setSButton);
             bottomPanel.add(probsButton);
             bottomPanel.add(valuesButton);
             bottomPanel.add(clearButton);
-            bottomPanel.add(saveButton);
-            bottomPanel.add(loadButton);
             frame.add(bottomPanel, BorderLayout.SOUTH);
 
             //Create initial node 
@@ -132,7 +146,7 @@ public class Main {
                     String result = new String();
                     ArrayList<Double> probs = graph.getProbabilities();
                     for (int i = 0; i < probs.size(); i++) {
-                        result += "P" + i + " = " + String.format("%.2f", probs.get(i)) + ", ";
+                        result += "P" + i + " = " + String.format("%.2f", probs.get(i)) + "  ";
                     }
                     probsResultField.setText(result);
                 }
@@ -165,6 +179,8 @@ public class Main {
                     probsResultField.setText(null);
                     valuesResultField.setText(null);
                     sField.setEditable(true);
+                    sField.setText(null);
+                    nameField.setText("output.json");
                     setSButton.setEnabled(true);
                 }
             });
@@ -194,7 +210,7 @@ public class Main {
                     }
                     obj.put("nodes", json_nodes);
                     String projectDir = System.getProperty("user.dir");
-                    File outputFile = new File(projectDir + File.separator + "graph_files" + File.separator + "output.json");
+                    File outputFile = new File(projectDir + File.separator + "graph_files" + File.separator + nameField.getText());
                     outputFile.getParentFile().mkdirs();
                     try (FileWriter writer = new FileWriter(outputFile)) {
                         writer.write(obj.toString(2)); 
